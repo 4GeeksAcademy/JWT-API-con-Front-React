@@ -11,6 +11,20 @@ def hello1():
     return ({"msg": "hello"}, 200)
 
 
+@api.route("/private", methods=["GET"])
+@jwt_required()
+def private():
+    user_id = get_jwt_identity()
+
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"msg": "User not found"}), 404
+
+    return jsonify({
+        "user": user.serialize()
+    }), 200
+
+
 @api.route('/signup', methods=['POST'])
 def signup():
 
